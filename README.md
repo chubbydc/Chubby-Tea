@@ -1,85 +1,142 @@
-// Categories for dynamic review generation
-const openers = [
-  "Danny C suggested I try Chubby Tea, and it was amazing!",
-  "Thanks to Danny C, I discovered Chubby Tea.",
-  "Danny C recommended Chubby Tea, and it was worth every sip.",
-  "I followed Danny C’s advice to visit Chubby Tea.",
-  "Danny C’s suggestion to check out Chubby Tea was spot on."
-];
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chubby Tea</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 20px;
+      max-width: 700px;
+      background-color: #016936;
+      color: #FFD700;
+      font-weight: bold;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px 5px;
+      background-color: black;
+      color: white;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    button:hover {
+      background-color: #333;
+    }
+    .output {
+      margin: 15px 0;
+      padding: 10px;
+      border: 1px solid #444;
+      border-radius: 5px;
+      background-color: #222;
+      color: #FFD700;
+    }
+    a {
+      text-decoration: none;
+      padding: 10px 20px;
+      margin: 10px 5px;
+      background-color: black;
+      color: white;
+      font-weight: bold;
+      border-radius: 5px;
+      display: inline-block;
+    }
+    a:hover {
+      background-color: #333;
+    }
+  </style>
+</head>
+<body>
 
-const descriptions = [
-  "the staff was incredibly polite and accommodating",
-  "the service was quick and efficient",
-  "the atmosphere was vibrant and welcoming",
-  "the drinks were perfectly balanced in flavor",
-  "the menu offered a great variety of options",
-  "the flavors were unique and refreshing"
-];
+  <h1>Chubby Tea</h1>
+  <p>Click the button below to generate a review. Use the link to leave a review on Yelp!</p>
 
-const specifics = [
-  "the mango coconut slushy was a perfect treat on a hot day",
-  "the herbal hot tea was soothing and aromatic",
-  "the milk tea was rich and perfectly brewed",
-  "the taro topping added an amazing texture to my drink",
-  "the green bean topping was a surprising delight",
-  "the grapefruit kumquat green tea was zesty and refreshing"
-];
+  <button onclick="generateReview()">Generate a Review</button>
+  <button onclick="copyToClipboard()">Copy to Clipboard</button>
+  <div id="reviewOutput" class="output">Your review will appear here.</div>
 
-const closers = [
-  "I’ll definitely return!",
-  "Looking forward to trying more from the menu.",
-  "This spot has become my new favorite.",
-  "Highly recommended for tea lovers!",
-  "I can’t wait to bring my friends here."
-];
+  <a href="https://www.yelp.com/writeareview/biz/38eXlFZ8UD_ExersL2-Smg?review_origin=review-feed-war-widget" target="_blank">Leave a Yelp Review</a>
 
-// Set to track generated reviews
-let generatedReviews = new Set();
+  <script>
+    // Components for dynamic review generation
+    const openers = [
+      "Danny C suggested I try Chubby Tea, and I am so glad I did!",
+      "Thanks to Danny C, I discovered Chubby Tea.",
+      "Danny C recommended Chubby Tea, and it was worth every sip.",
+      "I followed Danny C’s advice to visit Chubby Tea.",
+      "Danny C’s suggestion to check out Chubby Tea was spot on.",
+    ];
 
-/**
- * Generate a single unique review.
- */
-function generateUniqueReview() {
-  let review;
+    const descriptivePhrases = [
+      "the staff was incredibly polite and accommodating",
+      "the service was prompt and professional",
+      "the atmosphere was vibrant and welcoming",
+      "the drinks were bursting with flavor",
+      "the menu offered a great variety",
+      "the flavors were unique and refreshing",
+    ];
 
-  // Ensure uniqueness
-  do {
-    const opener = openers[Math.floor(Math.random() * openers.length)];
-    const description = descriptions[Math.floor(Math.random() * descriptions.length)];
-    const specific = specifics[Math.floor(Math.random() * specifics.length)];
-    const closer = closers[Math.floor(Math.random() * closers.length)];
+    const specificDetails = [
+      "the mango coconut slushy was a perfect treat on a hot day",
+      "the herbal hot tea was soothing and aromatic",
+      "the milk tea was rich and perfectly brewed",
+      "the taro topping added an amazing texture to my drink",
+      "the green bean topping was a surprising delight",
+      "the grapefruit kumquat green tea was zesty and refreshing",
+    ];
 
-    review = `${opener} I found that ${description}. In particular, ${specific}. ${closer}`;
-  } while (generatedReviews.has(review));
+    const closers = [
+      "I’ll definitely return!",
+      "Looking forward to trying more from the menu.",
+      "This spot has become my new favorite.",
+      "Highly recommended for tea lovers!",
+    ];
 
-  // Add to the set of generated reviews
-  generatedReviews.add(review);
+    // Array to track unique reviews
+    let generatedReviews = [];
 
-  return review;
-}
+    function generateReview() {
+      let review;
 
-/**
- * Generate a specified number of unique reviews.
- * @param {number} count - Number of unique reviews to generate.
- * @returns {string[]} Array of unique reviews.
- */
-function generateReviews(count) {
-  const reviews = [];
+      // Keep generating until a unique review is created
+      do {
+        const opener = openers[Math.floor(Math.random() * openers.length)];
+        const descriptive = descriptivePhrases[Math.floor(Math.random() * descriptivePhrases.length)];
+        const detail = specificDetails[Math.floor(Math.random() * specificDetails.length)];
+        const closer = closers[Math.floor(Math.random() * closers.length)];
 
-  // Check if it's possible to generate the requested number of unique reviews
-  const maxCombinations = openers.length * descriptions.length * specifics.length * closers.length;
-  if (count > maxCombinations) {
-    throw new Error(`Cannot generate ${count} unique reviews. Maximum possible is ${maxCombinations}.`);
-  }
+        review = `${opener} I found that ${descriptive}. In particular, ${detail}. ${closer}`;
+      } while (generatedReviews.includes(review));
 
-  // Generate the reviews
-  while (reviews.length < count) {
-    reviews.push(generateUniqueReview());
-  }
+      // Add the unique review to the tracking array
+      generatedReviews.push(review);
 
-  return reviews;
-}
+      // Display the review
+      const reviewOutput = document.getElementById("reviewOutput");
+      if (reviewOutput) {
+        reviewOutput.textContent = review;
+      } else {
+        console.error("Output element not found!");
+      }
+    }
 
-// Example: Generate 5 unique reviews
-const uniqueReviews = generateReviews(5);
-console.log(uniqueReviews);
+    function copyToClipboard() {
+      const reviewText = document.getElementById("reviewOutput")?.textContent;
+      if (reviewText && reviewText !== "Your review will appear here.") {
+        navigator.clipboard.writeText(reviewText).then(() => {
+          alert("Review copied to clipboard!");
+        }).catch(err => {
+          console.error("Failed to copy:", err);
+        });
+      } else {
+        alert("No review to copy! Generate a review first.");
+      }
+    }
+  </script>
+
+</body>
+</html>
